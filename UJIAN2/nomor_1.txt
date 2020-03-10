@@ -1,0 +1,78 @@
+mysql> use sakila
+
+NO.1
+
+mysql> select film.title, category.name, film.length from
+    -> film inner join film_category
+    -> on film.film_id = film_category.film_id
+    -> inner join category
+    -> on film_category.category_id = category.category_id
+    -> where category.name = 'comedy'
+    -> order by length limit 10;
+
+NO.2
+
+mysql> select category.name as kategori, count(film.title) as jumlahMovie, avg(rental_rate) as rataHargaSewa
+    -> from film, category, film_category
+    -> where film.film_id = film_category.film_id and category.category_id = film_category.category_id
+    -> group by category.name
+    -> order by count(film.title) desc;
+
+No.3
+
+mysql> create temporary table rating_temp(        
+    -> rating varchar(50),
+    -> keterangan varchar(50));
+   
+
+mysql> insert into rating_temp values
+    -> ("G", "General Audiences"),
+    -> ("PG", "Parental Guidance Suggested"),
+    -> ("PG-13", "Parental Guidances for Under 13"),
+    -> ("R", "Restricted"),
+    -> ("NC-17", "No Children Under 17 Admitted");
+
+mysql> select film.rating as rating, rating_temp.keterangan as keterangan, count(film.title) as jumlahMovie
+    -> from film, rating_temp
+    -> where film.rating = rating_temp.rating
+    -> group by film.rating;
+
+NO.4
+
+mysql>select actor.actor_id, actor.first_name, actor.last_name, count(film_actor.actor_id) as jumlah_movie from
+    ->actor inner join film_actor
+    ->on actor.actor_id = film_actor.actor_id
+    ->group by film_actor.actor_id
+    ->order by jumlah_movie desc limit 10;
+
+No.5
+
+mysql> select category.name as category, count(film.title) as jumlah_Movie   
+    -> from actor, film, film_actor, film_category, category
+    -> where actor.actor_id = film_actor.actor_id and film.film_id = film_actor.film_id and film.film_id = film_category.film_id and 
+    -> category.category_id = film_category.category_id and actor.first_name in ("GINA") and actor.last_name in ("DEGENERES") 
+    -> group by category.name;
+
+No.6
+
+mysql> select film.title as title, category.name as category
+    -> from actor, film, film_actor, film_category, category
+    -> where actor.actor_id = film_actor.actor_id and film.film_id = film_actor.film_id and film.film_id = film_category.film_id and 
+    -> category.category_id = film_category.category_id and actor.first_name in ("GINA") and actor.last_name in ("DEGENERES") and category.name in ("Sci-Fi");
+
+No.7
+
+mysql> select actor.actor_id, actor.first_name, actor.last_name, count(film.title) as jumlah_Movie
+    -> from actor, film, film_actor, film_category, category
+    -> where actor.actor_id = film_actor.actor_id and film.film_id = film_actor.film_id and film.film_id = film_category.film_id and 
+    -> category.category_id = film_category.category_id and category.name in ("Horror")
+    -> group by actor.actor_id
+    -> order by count(film.title) desc
+    -> limit 10;
+
+No.8
+
+mysql> select film.title as title, category.name as category
+    -> from actor, film, film_actor, film_category, category
+    -> where actor.actor_id = film_actor.actor_id and film.film_id = film_actor.film_id and film.film_id = film_category.film_id and 
+    -> category.category_id = film_category.category_id and category.name in ("Horror") and actor.first_name in ("JULIA") and actor.last_name in ("MCQUEEN");
